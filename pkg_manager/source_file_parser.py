@@ -33,7 +33,7 @@ def parse_single_entry(all_lines, base_url) -> (PkgEntry, int):
             if curr_line.startswith(BUILD_DEPENDENCIES_IND_PREFIX):
                 if to_ret_obj is not None:
                     all_deps = curr_line.split(BUILD_DEPENDENCIES_IND_PREFIX)[1].strip().split(",")
-                    all_deps = map(lambda x: x.strip().split()[0], all_deps)
+                    all_deps = list(map(lambda x: x.strip().split()[0], all_deps))
                     to_ret_obj.add_dependencies(all_deps)
 
             # Build-Depends-Indep:

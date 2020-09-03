@@ -45,6 +45,27 @@ Docstring:
 Download sources of all the packages in to the provided folder.
 :param output_folder: Path to the local folder where the files should be downloaded.
 :return:
+
+In [5]: p.get_pkgs_with_dependency?
+Type:        method
+String form: <bound method PackageManager.get_pkgs_with_dependency of <pkg_manager.package_manager.PackageManager object at 0x7f0d4de3ff60>>
+File:        /home/machiry/projects/apt-scraper-utils/pkg_manager/package_manager.py
+Definition:  p.get_pkgs_with_dependency(self, dep_name)
+Docstring:
+Get all packages that contain the provided dependency.
+:param dep_name: Dependency name
+:return: list of package names that contain the provided dependency.
+
+In [6]: p.get_pkgs_without_dependency?
+Type:        method
+String form: <bound method PackageManager.get_pkgs_without_dependency of <pkg_manager.package_manager.PackageManager object at 0x7f0d4de3ff60>>
+File:        /home/machiry/projects/apt-scraper-utils/pkg_manager/package_manager.py
+Definition:  p.get_pkgs_without_dependency(self, dep_name)
+Docstring:
+Get all packages that DO NOT contain the provided dependency.
+:param dep_name: Dependency name
+:return: list of package names that DO NOT contain the provided dependency.
+
 ```
 
 You can refer the docstring of any of the function to understand its uses.

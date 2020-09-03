@@ -84,6 +84,36 @@ class PackageManager:
         else:
             logging.error("Unable to open the provided file %s", self.source_file_path)
 
+    def get_pkgs_with_dependency(self, dep_name):
+        '''
+        Get all packages that contain the provided dependency.
+        :param dep_name: Dependency name
+        :return: list of package names that contain the provided dependency.
+        '''
+        dep_name = dep_name.lower()
+        all_rev_deps = set(self.reverse_dependency_map.keys())
+        all_rel_deps = list(filter(lambda x: dep_name in x.lower(), all_rev_deps))
+        all_interesting_pkgs = set()
+        for curr_d in all_rel_deps:
+            all_interesting_pkgs.update(set(self.reverse_dependency_map[curr_d]))
+        all_interesting_pkgs = list(filter(lambda x: dep_name in x.lower(), all_interesting_pkgs))
+        return list(all_interesting_pkgs)
+
+    def get_pkgs_without_dependency(self, dep_name):
+        '''
+        Get all packages that DO NOT contain the provided dependency.
+        :param dep_name: Dependency name
+        :return: list of package names that DO NOT contain the provided dependency.
+        '''
+        dep_name = dep_name.lower()
+        all_rev_deps = set(self.reverse_dependency_map.keys())
+        all_rel_deps = list(filter(lambda x: dep_name not in x.lower(), all_rev_deps))
+        all_interesting_pkgs = set()
+        for curr_d in all_rel_deps:
+            all_interesting_pkgs.update(set(self.reverse_dependency_map[curr_d]))
+        all_interesting_pkgs = list(filter(lambda x: dep_name not in x.lower(), all_interesting_pkgs))
+        return list(all_interesting_pkgs)
+
     def rebuild_pkg_entries(self) -> None:
         '''
         Rebuild package entries.
