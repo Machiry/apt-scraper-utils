@@ -20,7 +20,7 @@ class PackageManager:
         all_pkg_entries (map) : Map of package name and PkgEntry object.
 
         dependency_map (map: str -> list): Map of package name and all the build dependencies of the package.
-        
+
         reverse_dependency_map (map: str -> list): Reverse dependency map i.e., map of a dependency and all the package
                                 that depend on the dependency.
     '''
@@ -150,6 +150,6 @@ class PackageManager:
         '''
         Download sources of all the packages in to the provided folder.
         :param output_folder: Path to the local folder where the files should be downloaded.
-        :return:
+        :return: None
         '''
         self.download_packages_source(self.all_pkg_entries.keys(), output_folder)
