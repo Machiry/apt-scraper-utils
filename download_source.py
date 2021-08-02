@@ -1,3 +1,9 @@
+#####################################################################
+#
+# This script will download all the C/C++ package sources to a local 
+# folder
+#
+######################################################################
 from pkg_manager import PackageManager
 from ctypes.util import find_library
 
