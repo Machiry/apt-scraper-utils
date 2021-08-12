@@ -3,6 +3,8 @@
 # This script will download all the C/C++ package tar sources to a local 
 # folder -> extract the tar sources -> extract the .bc files from the tar 
 # archives once it build the packages using wllvm
+# 
+# invoke this script with sudo, so that packages can be installed
 #
 ######################################################################
 from pkg_manager import PackageManager
@@ -45,16 +47,20 @@ p2 = PackageManager.from_picked_json("dummp.picked.json")
 
 packages_available = p.all_pkg_entries
 
+#for making package installation noninterative
+cmd = "(" + "export DEBIAN_FRONTEND=noninteractive" + ")"
+subprocess.call(cmd, shell=True)
+
 for pkgs in packages_available:
     
     reverse_dependencies = []
     dependency_list = p.dependency_map[pkgs]
     for dependencies in dependency_list:
-        subprocess.call(['sudo apt install', str(dependencies)], shell=True)
+        subprocess.call(['sudo apt -yq install', str(dependencies)], shell=True)
         reverse_dependencies.extend(p.reverse_dependency_map[dependencies])
     
     for lib in reverse_dependencies:
-        subprocess.call(['sudo apt install', str(lib)], shell=True)
+        subprocess.call(['sudo apt -yq install', str(lib)], shell=True)
         if (find_library(lib) != None):
             print()
             print("...")
