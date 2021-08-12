@@ -1,7 +1,8 @@
 #####################################################################
 #
-# This script will download all the C/C++ package sources to a local 
-# folder
+# This script will download all the C/C++ package tar sources to a local 
+# folder -> extract the tar sources -> extract the .bc files from the tar 
+# archives once it build the packages using wllvm
 #
 ######################################################################
 from pkg_manager import PackageManager
