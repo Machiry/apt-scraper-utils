@@ -51,8 +51,9 @@ for pkgs in packages_available:
     reverse_dependencies = []
     dependency_list = p.dependency_map[pkgs]
     for dependencies in dependency_list:
-        for reverse_dependencies in p.reverse_dependency_map[dependencies]:
-            subprocess.call(['sudo apt -yq install', str(reverse_dependencies)], shell=True)        
+        # install all reverse dependencies might be too slow (not necessary), uncomment if needed
+        #for reverse_deps in p.reverse_dependency_map[dependencies]:
+        #    subprocess.call(['sudo apt -yq install', str(reverse_deps)], shell=True)        
         subprocess.call(['sudo apt -yq install', str(dependencies)], shell=True)
         reverse_dependencies.extend(p.reverse_dependency_map[dependencies])
     
