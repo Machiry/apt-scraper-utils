@@ -6,6 +6,9 @@
 # 
 # invoke this script with sudo, so that packages can be installed
 #
+# Make sure that clang and llvm-link are set to the same llvm version before 
+# invoking this script. 
+#
 ##########################################################################
 from pkg_manager import PackageManager
 from ctypes.util import find_library
@@ -14,11 +17,12 @@ import subprocess
 import sys
 import re
 
-source_file_to_read_packages_from = "/home/singhav/Sources"
+#fill in the missing ("") paths 
+source_file_to_read_packages_from = ""
 mirror_url = "http://mirror.math.ucdavis.edu/ubuntu/"
-local_download_folder_for_sources = "/home/singhav/apt_scraper_sources"
-extracted_tar_sources = '/home/singhav/extracted_tar_sources'
-afl_fuzzing_sources = '/home/singhav/afl_sources'
+local_download_folder_for_sources = ""
+extracted_tar_sources = ""
+afl_fuzzing_sources = ""
 
 if not os.path.isdir(local_download_folder_for_sources):
     cmd = "(" + "mkdir " + local_download_folder_for_sources + ")"
@@ -71,7 +75,7 @@ for pkgs in packages_available:
 for subdir, dirs, files in os.walk(local_download_folder_for_sources):
     
     for File in files:
-        if "orig" in str(File):
+        if ".orig." in str(File):
 
             #extract the archive
             cmd = "(" + "cd " + local_download_folder_for_sources + " && " + "tar -xf " + str(File) + ")"
@@ -79,7 +83,12 @@ for subdir, dirs, files in os.walk(local_download_folder_for_sources):
 
             archive_parts = File.split(".orig")
             underscore_split = archive_parts[0].split("_")
-            directory_name = str(underscore_split[0]) + "-" + str(underscore_split[1])
+            
+            directory_name = ""
+            try:
+                directory_name = str(underscore_split[0]) + "-" + str(underscore_split[1])
+            except:
+                continue
 
             configure_path = local_download_folder_for_sources + "/" + directory_name + "/" + "configure"
             
@@ -87,7 +96,7 @@ for subdir, dirs, files in os.walk(local_download_folder_for_sources):
             if( os.path.exists(configure_path) == True ):
                 print(File)
                 #now cd into the archive
-                cmd = "(" + "cd " + local_download_folder_for_sources + "/" + directory_name + " && " + "export LLVM_COMPILER=clang" + " && " + "CC=wllvm ./configure" +  " && " + "make" + " && " + "make install DESTDIR=" + extracted_tar_sources + "/" + directory_name  + ")"
+                cmd = "(" + "cd " + local_download_folder_for_sources + "/" + directory_name + " && " + "export LLVM_COMPILER=clang" + " && " + "CC=wllvm yes '' | ./configure" +  " && " + "make" + " && " + "make install DESTDIR=" + extracted_tar_sources + "/" + directory_name  + ")"
                 subprocess.call(cmd, shell=True)
 
 #run extract-bc to get the bit-code files form the binaries
