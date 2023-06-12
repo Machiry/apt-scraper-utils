@@ -17,10 +17,20 @@ import subprocess
 import sys
 import re
 
+#make sure paths are set correctly 
+# path the the mirror file
 source_file_to_read_packages_from = "/pathto/apt-scraper-utils/Sources"
+
+#mirror url 
 mirror_url = "http://mirror.math.ucdavis.edu/ubuntu/"
+
+#sources will be downloaded here
 local_download_folder_for_sources = "/pathto/apt-scraper-utils/apt_scraper_sources"
+
+#script will extract and build it here
 extracted_tar_sources = '/pathto/apt-scraper-utils/extracted_tar_sources'
+
+#bitcodes will here extracted here
 afl_fuzzing_sources = '/pathto/apt-scraper-utils/afl_sources'
 
 if not os.path.isdir(local_download_folder_for_sources):
