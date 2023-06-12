@@ -12,7 +12,7 @@ A humble python API to query, manage and download debian packages.
 ## Using the API
 ### Install requirements
 ```
-$ sudo pip3.5 install requirements.txt
+$ sudo pip3.5 install -r requirements.txt
 ```
 ### Using the API
 #### Initializing
