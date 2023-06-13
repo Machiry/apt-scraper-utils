@@ -17,12 +17,21 @@ import subprocess
 import sys
 import re
 
-#fill in the missing ("") paths 
-source_file_to_read_packages_from = ""
+#make sure paths are set correctly 
+# path the the mirror file
+source_file_to_read_packages_from = "/pathto/apt-scraper-utils/Sources"
+
+#mirror url 
 mirror_url = "http://mirror.math.ucdavis.edu/ubuntu/"
-local_download_folder_for_sources = ""
-extracted_tar_sources = ""
-afl_fuzzing_sources = ""
+
+#sources will be downloaded here
+local_download_folder_for_sources = "/pathto/apt-scraper-utils/apt_scraper_sources"
+
+#script will extract and build it here
+extracted_tar_sources = '/pathto/apt-scraper-utils/extracted_tar_sources'
+
+#bitcodes will here extracted here
+afl_fuzzing_sources = '/pathto/apt-scraper-utils/afl_sources'
 
 if not os.path.isdir(local_download_folder_for_sources):
     cmd = "(" + "mkdir " + local_download_folder_for_sources + ")"
@@ -96,7 +105,7 @@ for subdir, dirs, files in os.walk(local_download_folder_for_sources):
             if( os.path.exists(configure_path) == True ):
                 print(File)
                 #now cd into the archive
-                cmd = "(" + "cd " + local_download_folder_for_sources + "/" + directory_name + " && " + "export LLVM_COMPILER=clang" + " && " + "CC=wllvm yes '' | ./configure" +  " && " + "make" + " && " + "make install DESTDIR=" + extracted_tar_sources + "/" + directory_name  + ")"
+                cmd = "(" + "cd " + local_download_folder_for_sources + "/" + directory_name + " && " + "export LLVM_COMPILER=clang" + " && " + "export WLLVM_OUTPUT_LEVEL=Debug" + " && " + "export WLLVM_OUTPUT_FILE=/tmp/" + str(File) +  "_wllvm.log"  + " && " + "CC=wllvm CXX=wllvm++ yes '' | ./configure" +  " && " + "make CC=wllvm CXX=wllvm++ -j12" + " && " + "make CC=wllvm CXX=wllvm++ install DESTDIR=" + extracted_tar_sources + "/" + directory_name  + ")"
                 subprocess.call(cmd, shell=True)
 
 #run extract-bc to get the bit-code files form the binaries
@@ -107,6 +116,16 @@ for subdir, dirs, files in os.walk(extracted_tar_sources):
         for File in files:
             cmd = "(" + "cd " + subdir + " && " + "extract-bc " + File + " && " + "mv " + File + ".bc " + afl_fuzzing_sources + ")"
             subprocess.call(cmd, shell=True)
+            
+#run extract-bc to get bitcodes from library files if any
+for subdir, dirs, files in os.walk(extracted_tar_sources):
+
+    if subdir.endswith("/lib"):
+        
+        for File in files:
+            if (".a") in File:
+                cmd = "(" + "cd " + subdir + " && " + "extract-bc -b " + File + " && " + "mv " + File + ".bc " + afl_fuzzing_sources + ")"
+                subprocess.call(cmd, shell=True)
 
 
 
