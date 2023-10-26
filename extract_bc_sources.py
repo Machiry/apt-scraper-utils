@@ -59,15 +59,20 @@ packages_available = p.all_pkg_entries
 cmd = "(" + "export DEBIAN_FRONTEND=noninteractive" + ")"
 subprocess.call(cmd, shell=True)
 
+# already checked dependencies
+checked_dep_cache = set()
+
 for pkgs in packages_available:
     
     reverse_dependencies = []
     dependency_list = p.dependency_map[pkgs]
     for dependencies in dependency_list:
+        if dependencies not in checked_dep_cache:
+            subprocess.call(["sudo apt -yq install", str(dependencies)], shell=True)
+            checked_dep_cache.add(dependencies)
         # install all reverse dependencies might be too slow (not necessary), uncomment if needed
-        #for reverse_deps in p.reverse_dependency_map[dependencies]:
-        #    subprocess.call(['sudo apt -yq install', str(reverse_deps)], shell=True)        
-        subprocess.call(['sudo apt -yq install', str(dependencies)], shell=True)
+        # for reverse_deps in p.reverse_dependency_map[dependencies]:
+        #    subprocess.call(['sudo apt -yq install', str(reverse_deps)], shell=True)
         reverse_dependencies.extend(p.reverse_dependency_map[dependencies])
     
     for lib in reverse_dependencies:
